@@ -2,9 +2,7 @@ package co.unicauca.segundoParcial.access;
 
 import co.unicauca.segundoParcial.model.Accion;
 
-public class BolsaValoresRepository {
-    boolean saveAction(Accion action){
-        return true;
-    }
+public interface BolsaValoresRepository {
+    boolean saveAction(Accion action);
     boolean editAction(String nombreAccion, long precioActual);
 }
