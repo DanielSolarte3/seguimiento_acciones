@@ -12,27 +12,43 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BolsaValoresRepositoryTest {
 
     private Accion testAction;
-    @Mock
-    private BolsaValoresRepository bolsaValoresRepository;
 
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
+    private BolsaValoresRepository bolsaValoresRepository = new BolsaValoresRepository();
+
     @Test
     void testSaveEditAction(){
         testAction = new Accion();
         testAction.setNombreAccion("Facebook");
         testAction.setPrecioActual(10000L);
         testAction.setPrecioAnterior(5000L);
-        boolean ban = true;
-        when(bolsaValoresRepository.saveAction(testAction)).thenReturn(ban);
+        assertTrue(bolsaValoresRepository.saveAction(testAction));
+        assertTrue(bolsaValoresRepository.editAction("Facebook", 15000));
+    }
 
-        assertEquals(bolsaValoresRepository.saveAction(testAction), ban);
-        //when(bolsaValoresRepository.editAction("Facebook", 15000L)).thenReturn(false);
+    @Test
+    void testFindFindAllActions(){
+        List<Accion> actionList = new ArrayList<>();
+        testAction = new Accion();
+        testAction.setNombreAccion("Facebook");
+        testAction.setPrecioActual(10000L);
+        testAction.setPrecioAnterior(5000L);
+        bolsaValoresRepository.saveAction(testAction);
+
+        assertEquals( bolsaValoresRepository.findAction("Facebook").getNombreAccion(),
+                testAction.getNombreAccion());
+
+        actionList.add(testAction);
+        testAction.setNombreAccion("Google");
+        testAction.setPrecioActual(20000L);
+        testAction.setPrecioAnterior(6000L);
+        actionList.add(testAction);
+        bolsaValoresRepository.saveAction(testAction);
     }
 
 }
