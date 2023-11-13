@@ -14,7 +14,7 @@ import java.util.List;
 public class AccionController {
 
     @Autowired
-    private BolsaValoresRepository bolsaValoresRepository;
+    private BolsaValoresRepository bolsaValoresRepository = new BolsaValoresRepository();
 
     @PostMapping
     public void createAccion(@RequestBody @NonNull Accion action){
