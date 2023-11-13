@@ -66,7 +66,7 @@ public class BolsaValoresRepository implements IBolsaValoresRepository{
             //this.connect();
 
             String sql = "INSERT INTO accion ( nombreAccion, precioActual, precioAnterior) "
-                    + "VALUES ( ?, ? )";
+                    + "VALUES ( ?, ?, ?)";
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, action.getNombreAccion());
