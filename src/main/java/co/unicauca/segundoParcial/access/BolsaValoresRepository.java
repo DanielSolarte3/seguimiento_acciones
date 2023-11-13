@@ -21,15 +21,7 @@ public class BolsaValoresRepository implements IBolsaValoresRepository{
                 + "	nombreAccion text PRIMARY KEY,\n"
                 + "	precioActual integer NOT NULL,\n"
                 + "	precioAnterior integer NULL\n"
-                + ");"
-                + "CREATE TABLE IF NOT EXISTS usuario (\n"
-                + "	id int(11) NOT NULL AUTO_INCREMENT,\n"
-                + "	correo varchar(255) NOT NULL,\n"
-                + "	contrasena varchar(255) NOT NULL,\n"
-                + ");"
-                + "CREATE TABLE IF NOT EXISTS usuario_accion (\n"
-                + "	id int(11) NOT NULL AUTO_INCREMENT,\n"
-                + "	idUsuario int(11) NOT NULL,\n";
+                + ");";
 
         try {
             this.connect();
