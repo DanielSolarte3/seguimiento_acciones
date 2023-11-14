@@ -87,12 +87,15 @@ public class BolsaValoresRepository implements IBolsaValoresRepository{
             }
 
             String sql = "UPDATE  accion "
-                    + "SET precioActual = ?"
+                    + "SET precioActual = ?, precioAnterior = ?"
                     + "WHERE nombreAccion = ?";
+
+            Accion action = findAction(nombreAccion);
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, precioActual);
-            pstmt.setString(2, nombreAccion);
+            pstmt.setLong(2, action.getPrecioActual());
+            pstmt.setString(3, nombreAccion);
             pstmt.executeUpdate();
 
             return true;
