@@ -18,7 +18,8 @@ public class SegundoParcialApplication {
 	public OpenAPI custonOpenAPI() {
 		return new OpenAPI().info(new Info()
 				.title("SOFTWARE DE SEGUIMIENTO DE ACCIONES")
-				.version("1.0.0").description("Software que permite realizar un seguimiento de las acciones a los usuarios en una aplicación con Spring Boot."));
+				.version("1.0.0")
+				.description("Software que permite realizar un seguimiento de las acciones a los usuarios en una aplicación con Spring Boot."));
 	}
 
 }

@@ -13,7 +13,6 @@ import java.util.List;
 @RequestMapping("/accion")
 public class AccionController {
 
-
     private BolsaValoresRepository bolsaValoresRepository = new BolsaValoresRepository();
 
     @PostMapping

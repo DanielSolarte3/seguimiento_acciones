@@ -25,12 +25,12 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
     public void initDatabase() {
         String sql = "CREATE TABLE IF NOT EXISTS usuario (\n"
                 + "	idUsuario INTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                + "	correo VARCHAR(50) NOT NULL,\n"
-                + " contrasena VARCHAR(50) NOT NULL\n"
+                + "	correo TEXT NOT NULL,\n"
+                + " contrasena TEXT NOT NULL\n"
                 + ");"
                 + "CREATE TABLE IF NOT EXISTS usuarioAccion (\n"
                 + "	idUsuario INTEGER NOT NULL,\n"
-                + "	nombreAccion VARCHAR(50) NOT NULL,\n"
+                + "	nombreAccion TEXT NOT NULL,\n"
                 + " umbralSuperior INTEGER NOT NULL,\n"
                 + " umbralInferior INTEGER NOT NULL,\n"
                 + "	PRIMARY KEY (idUsuario, nombreAccion),\n"
@@ -40,8 +40,8 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
                 + "CREATE TABLE IF NOT EXISTS notificacion (\n"
                 + "	idNotificacion INTEGER PRIMARY KEY AUTOINCREMENT,\n"
                 + "	idUsuario INTEGER NOT NULL,\n"
-                + " titulo VARCHAR(50) NOT NULL,\n"
-                + " descripcion VARCHAR(50) NOT NULL,\n"
+                + " titulo TEXT NOT NULL,\n"
+                + " descripcion TEXT NOT NULL,\n"
                 + "	FOREIGN KEY (idUsuario) REFERENCES usuario (idUsuario)\n"
                 + ");";
 
@@ -98,6 +98,11 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
     }
 
     @Override
+    public boolean editUmbrales(int idUsuario, String nombreAccion, int USuperor, int UInferior) {
+        return false;
+    }
+
+
     public boolean editUmbrales(long idUsuario, String nombreAccion, long USuperor, long UInferior) {
         try {
             if (nombreAccion.isBlank()) {
@@ -123,10 +128,9 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
     }
 
     @Override
-    public boolean saveActionUser(long idUsuario, String nombreAccion, long USuperior, long UInferior) {
+    public boolean saveActionUser(AccionUsuario accionUsuario) {
         try {
-
-            if (nombreAccion.isBlank() || USuperior < UInferior) {
+            if(accionUsuario == null || accionUsuario.getAccion().getNombreAccion().isBlank() || accionUsuario.getUsuario().getId() == 0) {
                 return false;
             }
 
@@ -134,23 +138,25 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
                     + "VALUES ( ?, ?, ?, ?)";
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setLong(1, idUsuario);
-            pstmt.setString(2, nombreAccion);
-            pstmt.setLong(3, USuperior);
-            pstmt.setLong(4, UInferior);
+            pstmt.setInt(1, accionUsuario.getUsuario().getId());
+            pstmt.setString(2, accionUsuario.getAccion().getNombreAccion());
+            pstmt.setLong(3, accionUsuario.getUmbralSuperior());
+            pstmt.setLong(4, accionUsuario.getUmbralInferior());
             pstmt.executeUpdate();
 
             return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(BolsaValoresRepository.class.getName()).log(Level.SEVERE, null, ex);
+        } catch(SQLException ex) {
+            Logger.getLogger(SqlLiteRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
 
     @Override
-    public boolean deleteActionUser(long idUsuario, String nombreAccion) {
+    public boolean deleteActionUser(int idUsuario, String nombreAccion) {
         try {
-            if (nombreAccion.isBlank() || idUsuario <= 0) {
+
+            if (idUsuario == 0 || nombreAccion.isBlank()) {
+
                 return false;
             }
 
@@ -158,11 +164,11 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
                     + "WHERE idUsuario = ? AND nombreAccion = ?";
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setLong(1, idUsuario);
+            pstmt.setInt(1, idUsuario);
             pstmt.setString(2, nombreAccion);
             pstmt.executeUpdate();
-
             return true;
+
         } catch (SQLException ex) {
             Logger.getLogger(BolsaValoresRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -170,7 +176,7 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
     }
 
     @Override
-    public AccionUsuario findActionUser(long idUsuario, String nombreAccion) {
+    public AccionUsuario findActionUser(int idUsuario, String nombreAccion) {
         try {
             if (nombreAccion.isBlank() || idUsuario <= 0) {
                 return null;
@@ -181,16 +187,16 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, nombreAccion);
-            pstmt.setLong(2, idUsuario);
+            pstmt.setInt(2, idUsuario);
             pstmt.executeUpdate();
 
             ResultSet res = pstmt.executeQuery();
 
             if (res.next()) {
                 AccionUsuario action = new AccionUsuario();
-                action.setUmbralSuperior(res.getLong("umbralSuperior"));
-                action.setUmbralInferior(res.getLong("umbralInferior"));
-                action.getUsuario().setId((int) res.getLong("idUsuario"));
+                action.setUmbralSuperior(res.getInt("umbralSuperior"));
+                action.setUmbralInferior(res.getInt("umbralInferior"));
+                action.getUsuario().setId((int) res.getInt("idUsuario"));
                 action.getAccion().setNombreAccion(res.getString("nombreAccion"));
 
                 return action;
@@ -204,7 +210,7 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
     }
 
     @Override
-    public List<AccionUsuario> findAllActionsUser(long idUsuario) {
+    public List<AccionUsuario> findAllActionsUser(int idUsuario) {
         List<AccionUsuario> actions = new ArrayList<>();
         try {
             if (idUsuario <= 0) {
@@ -218,9 +224,9 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 AccionUsuario action = new AccionUsuario();
-                action.setUmbralSuperior(rs.getLong("umbralSuperior"));
-                action.setUmbralInferior(rs.getLong("umbralInferior"));
-                action.getUsuario().setId((int) rs.getLong("idUsuario"));
+                action.setUmbralSuperior(rs.getInt("umbralSuperior"));
+                action.setUmbralInferior(rs.getInt("umbralInferior"));
+                action.getUsuario().setId((int) rs.getInt("idUsuario"));
                 action.getAccion().setNombreAccion(rs.getString("nombreAccion"));
 
                 actions.add(action);
@@ -233,7 +239,7 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
     }
 
     @Override
-    public boolean saveNotification(long idUsuario, Notificacion notificacion) {
+    public boolean saveNotification(int idUsuario, Notificacion notificacion) {
         try {
             if (notificacion == null || notificacion.getTitulo().isBlank() || notificacion.getDescripcion().isBlank()) {
                 return false;
@@ -256,7 +262,7 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
     }
 
     @Override
-    public List<Notificacion> findAllNotifications(long idUsuario) {
+    public List<Notificacion> findAllNotifications(int idUsuario) {
         List<Notificacion> notifications = new ArrayList<>();
         try {
             if (idUsuario <= 0) {

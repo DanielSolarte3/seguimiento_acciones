@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface IGestionAccionesRepository {
     boolean saveUser(Usuario user);
-    boolean editUmbrales(long idUsuario, String nombreAccion, long USuperor, long UInferior);
-    boolean saveActionUser(long idUsuario, String nombreAccion, long USuperior, long UInferior);
-    boolean deleteActionUser(long idUsuario, String nombreAccion);
-    AccionUsuario findActionUser(long idUsuario, String nombreAccion);
-    List<AccionUsuario> findAllActionsUser(long idUsuario);
-    boolean saveNotification(long idUsuario, Notificacion notificacion);
-    List<Notificacion> findAllNotifications(long idUsuario);
+    boolean editUmbrales(int idUsuario, String nombreAccion, int USuperor, int UInferior);
+    boolean saveActionUser(AccionUsuario accionUsuario);
+    boolean deleteActionUser(int idUsuario, String nombreAccion);
+    AccionUsuario findActionUser(int idUsuario, String nombreAccion);
+    List<AccionUsuario> findAllActionsUser(int idUsuario);
+    boolean saveNotification(int idUsuario, Notificacion notificacion);
+    List<Notificacion> findAllNotifications(int idUsuario);
 }
