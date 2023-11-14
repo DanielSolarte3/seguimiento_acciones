@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/accion")
 public class AccionController {
 
-    @Autowired
+
     private BolsaValoresRepository bolsaValoresRepository = new BolsaValoresRepository();
 
     @PostMapping
