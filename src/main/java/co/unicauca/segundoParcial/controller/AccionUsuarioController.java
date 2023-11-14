@@ -16,12 +16,8 @@ public class AccionUsuarioController {
         sqlLiteRepository.saveActionUser(accionUsuario);
     }
 
-    @DeleteMapping("/{idUsuario}/{nombreUsuario}")
-    public void deleteAccionUsuario(@PathVariable int idUsuario, @PathVariable String nombreUsuario) {
-        sqlLiteRepository.deleteActionUser(idUsuario, nombreUsuario);
+    @DeleteMapping("/{idUsuario}/{nombreAccion}")
+    public void deleteAccionUsuario(@PathVariable int idUsuario, @PathVariable String nombreAccion) {
+        sqlLiteRepository.deleteActionUser(idUsuario, nombreAccion);
     }
-
-
-
-
 }
