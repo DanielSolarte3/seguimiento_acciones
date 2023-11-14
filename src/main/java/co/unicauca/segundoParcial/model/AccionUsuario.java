@@ -8,8 +8,7 @@ public class AccionUsuario implements IObserver{
     private long UmbralSuperior;
     private Usuario usuario;
     private Accion accion;
-
-
+    
     @Override
     public void notificar(String nombreAccion, long precioActual) {
         if(UmbralInferior>precioActual){

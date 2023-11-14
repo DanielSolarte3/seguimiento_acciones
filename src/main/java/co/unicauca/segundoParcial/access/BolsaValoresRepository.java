@@ -16,24 +16,24 @@ public class BolsaValoresRepository implements IBolsaValoresRepository{
         initDatabase();
     }
 
-    private void initDatabase() {
-        String sql = "CREATE TABLE IF NOT EXISTS accion (\n"
-                + "	nombreAccion text PRIMARY KEY,\n"
-                + "	precioActual integer NOT NULL,\n"
-                + "	precioAnterior integer NULL\n"
-                + ");";
+        private void initDatabase() {
+            String sql = "CREATE TABLE IF NOT EXISTS accion (\n"
+                    + "	nombreAccion text PRIMARY KEY,\n"
+                    + "	precioActual integer NOT NULL,\n"
+                    + "	precioAnterior integer NULL\n"
+                    + ");";
 
-        try {
-            this.connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
+            try {
+                this.connect();
+                Statement stmt = conn.createStatement();
+                stmt.execute(sql);
 
-        } catch (SQLException ex) {
-            Logger.getLogger(BolsaValoresRepository.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(BolsaValoresRepository.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-    }
 
-    public void connect() {
+        public void connect() {
         String url = "jdbc:sqlite::memory:";
 
         try {
