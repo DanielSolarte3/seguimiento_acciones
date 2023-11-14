@@ -5,10 +5,7 @@ import co.unicauca.segundoParcial.model.Notificacion;
 import co.unicauca.segundoParcial.model.Usuario;
 import lombok.Data;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,27 +75,121 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
 
     @Override
     public boolean saveUser(Usuario user) {
+        try {
+            if (user == null ||  user.getContrasena().isBlank()) {
+                return false;
+            }
+
+            String sql = "INSERT INTO usuario ( correo, contrasena) "
+                    + "VALUES ( ?, ?)";
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, user.getCorreo());
+            pstmt.setString(2, user.getContrasena());
+            pstmt.executeUpdate();
+
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(BolsaValoresRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return false;
     }
 
     @Override
     public boolean editUmbrales(long idUsuario, String nombreAccion, long USuperor, long UInferior) {
+        try {
+            if (nombreAccion.isBlank()) {
+                return false;
+            }
+
+            String sql = "UPDATE  usuarioaccion "
+                    + "SET umbralSuperior = ?, umbralInferior = ? "
+                    + "WHERE idUsuario = ? AND nombreAccion = ?";
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, USuperor);
+            pstmt.setLong(2, UInferior);
+            pstmt.setLong(3, idUsuario);
+            pstmt.setString(4, nombreAccion);
+            pstmt.executeUpdate();
+
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(BolsaValoresRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return false;
     }
 
     @Override
     public boolean saveActionUser(long idUsuario, String nombreAccion, long USuperior, long UInferior) {
+        try {
+
+            if (nombreAccion.isBlank() || USuperior < UInferior) {
+                return false;
+            }
+
+            String sql = "INSERT INTO usuarioaccion ( idUsuario, nombreAccion, umbralSuperior, umbralInferior) "
+                    + "VALUES ( ?, ?, ?, ?)";
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, idUsuario);
+            pstmt.setString(2, nombreAccion);
+            pstmt.setLong(3, USuperior);
+            pstmt.setLong(4, UInferior);
+            pstmt.executeUpdate();
+
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(BolsaValoresRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return false;
     }
 
     @Override
     public boolean deleteActionUser(long idUsuario, String nombreAccion) {
+        try {
+            if (nombreAccion.isBlank() || idUsuario <= 0) {
+                return false;
+            }
+
+            String sql = "DELETE FROM usuarioaccion "
+                    + "WHERE idUsuario = ? AND nombreAccion = ?";
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, idUsuario);
+            pstmt.setString(2, nombreAccion);
+            pstmt.executeUpdate();
+
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(BolsaValoresRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return false;
     }
 
     @Override
     public Accion findActionUser(long idUsuario, String nombreAccion) {
-        return null;
+
+        try {
+
+            if (action == null || action.getNombreAccion().isBlank()) {
+                return false;
+            }
+
+            String sql = "INSERT INTO accion ( nombreAccion, precioActual, precioAnterior) "
+                    + "VALUES ( ?, ?, ?)";
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, action.getNombreAccion());
+            pstmt.setLong(2, action.getPrecioActual());
+            pstmt.setLong(3, action.getPrecioAnterior());
+            pstmt.executeUpdate();
+
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(BolsaValoresRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     @Override
