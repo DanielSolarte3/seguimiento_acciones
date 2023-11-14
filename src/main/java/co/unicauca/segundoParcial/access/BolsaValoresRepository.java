@@ -52,7 +52,6 @@ public class BolsaValoresRepository implements IBolsaValoresRepository{
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-
     }
 
     @Override
