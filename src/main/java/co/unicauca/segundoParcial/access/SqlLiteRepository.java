@@ -27,8 +27,8 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
                 + "	idUsuario INTEGER PRIMARY KEY AUTOINCREMENT,\n"
                 + "	correo TEXT NOT NULL,\n"
                 + " contrasena TEXT NOT NULL\n"
-                + ");"
-                + "CREATE TABLE IF NOT EXISTS usuarioAccion (\n"
+                + ");";
+        String sql2 = "CREATE TABLE IF NOT EXISTS usuarioAccion (\n"
                 + "	idUsuario INTEGER NOT NULL,\n"
                 + "	nombreAccion TEXT NOT NULL,\n"
                 + " umbralSuperior INTEGER NOT NULL,\n"
@@ -36,8 +36,8 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
                 + "	PRIMARY KEY (idUsuario, nombreAccion),\n"
                 + "	FOREIGN KEY (idUsuario) REFERENCES usuario (idUsuario),\n"
                 + "	FOREIGN KEY (nombreAccion) REFERENCES accion (nombreAccion)\n"
-                + ");"
-                + "CREATE TABLE IF NOT EXISTS notificacion (\n"
+                + ");";
+        String sql3 = "CREATE TABLE IF NOT EXISTS notificacion (\n"
                 + "	idNotificacion INTEGER PRIMARY KEY AUTOINCREMENT,\n"
                 + "	idUsuario INTEGER NOT NULL,\n"
                 + " titulo TEXT NOT NULL,\n"
@@ -49,6 +49,8 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
             this.connect();
             Statement stmt = conn.createStatement();
             stmt.execute(sql);
+            stmt.execute(sql2);
+            stmt.execute(sql3);
         } catch (SQLException ex) {
             Logger.getLogger(BolsaValoresRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -220,13 +222,16 @@ public class SqlLiteRepository implements IGestionAccionesRepository{
             String sql = "SELECT * FROM usuarioAccion "
                     + "WHERE idUsuario = ?";
 
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1,idUsuario);
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 AccionUsuario action = new AccionUsuario();
                 action.setUmbralSuperior(rs.getInt("umbralSuperior"));
                 action.setUmbralInferior(rs.getInt("umbralInferior"));
+                action.setUsuario(new Usuario());
                 action.getUsuario().setId((int) rs.getInt("idUsuario"));
+                action.setAccion(new Accion());
                 action.getAccion().setNombreAccion(rs.getString("nombreAccion"));
 
                 actions.add(action);

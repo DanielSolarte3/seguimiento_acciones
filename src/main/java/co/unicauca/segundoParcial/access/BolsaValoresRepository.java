@@ -32,7 +32,6 @@ public class BolsaValoresRepository implements IBolsaValoresRepository{
                 Logger.getLogger(BolsaValoresRepository.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
         public void connect() {
         String url = "jdbc:sqlite::memory:";
 
